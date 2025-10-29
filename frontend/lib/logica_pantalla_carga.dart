@@ -1,7 +1,7 @@
 
 import 'package:flutter/foundation.dart'; // Para kIsWeb y ChangeNotifier
 import 'package:file_picker/file_picker.dart';
-import 'package:frontend/comunication_api.dart'; // Asegúrate que este sea el nombre correcto
+import 'package:frontend/comunication_api.dart'; 
 
 // Hereda de ChangeNotifier para notificar a la UI cuando los datos cambien
 class UploadHeadersLogic extends ChangeNotifier {
