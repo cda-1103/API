@@ -142,7 +142,7 @@ LOGGING = {
     'handlers': {
         'file': {
             'level' : 'INFO',
-            'filename' :'/Users/claudiodavilaablan/Documents/base de datos app inventario/carga_archivo.txt',
+            'filename' :'/Users/claudiodavilaablan/Documents/proyecto_API/logger/carga_archivo.txt',
             'class': 'logging.FileHandler',
             'formatter': 'formato',
         },

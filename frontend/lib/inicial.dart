@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/logica_pantalla_carga.dart';
-
+import 'package:frontend/popup_mapeo.dart';
 
 class InventoryUploadPage extends StatefulWidget {
   const InventoryUploadPage({super.key});
@@ -76,19 +76,43 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Text(
-                  // Lee el estado 'statusMessage' del ViewModel
-                  _viewModel.statusMessage, 
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16.0),
+                      _viewModel.statusMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16.0),
                 ),
               ),
-              const SizedBox(height: 40.0),
+              const SizedBox(height: 16.0),
+
+              Text(
+                "Las columnas detectadas son: ",
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 8.0),
+
+              if (_viewModel.fileHeaders.isNotEmpty)
+                Wrap(
+                  spacing: 3.0,
+                  runSpacing: 3.0,
+                  children: _viewModel.fileHeaders.map((header){
+                    return Chip(
+                      label: Text(header),
+                      );
+                  }).toList(),
+                ),
+
+
 
               ElevatedButton(
                 // Habilita/deshabilita leyendo 'fileHeaders' e 'isLoading' del ViewModel
                 onPressed: (_viewModel.fileHeaders.isEmpty || _viewModel.isLoading) 
                     ? null 
-                    : _viewModel.goToMappingStep, // Llama al método del ViewModel
+                    : () {
+                      popUpMapeo(context, _viewModel);
+                    },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue, 
                   foregroundColor: Colors.white,

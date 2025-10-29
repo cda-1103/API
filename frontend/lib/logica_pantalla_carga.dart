@@ -12,7 +12,7 @@ class UploadHeadersLogic extends ChangeNotifier {
   List<String> _fileHeaders = [];
   String _statusMessage = ' Ningún archivo seleccionado';
 
-  // --- Getters públicos para que la UI lea los estados ---
+  // --- Getters públicos para que la UI lea los estados de carga del archivo---
   PlatformFile? get selectedFile => _selectedFile;
   bool get isLoading => _isLoading;
   List<String> get fileHeaders => _fileHeaders;
@@ -44,7 +44,7 @@ class UploadHeadersLogic extends ChangeNotifier {
         // 3. Llama a la API
         final headers = await headersFromApi(file); 
 
-        // 4. Si tiene éxito, guarda cabeceras y notifica
+        // 4. Si tiene éxito, guarda cabeceras y notifica al usuario
         _fileHeaders = headers;
         _isLoading = false;
         _statusMessage = 'Cabeceras recibidas (${headers.length}). Listo para mapear.';

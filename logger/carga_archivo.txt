@@ -1,0 +1,1 @@
+INFO 2025-10-29 03:17:35,356 Cabeceras de alrchivo extradias: ['serial_number', 'description', 'category', 'brand', 'type', 'quantity', 'location']

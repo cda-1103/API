@@ -9,7 +9,7 @@ import pandas as pd
 
 logger = logging.getLogger('carga_archivo')
 
-#funcion para subir productos
+#funcion para subir productos, aun no se usa
 @api_view(['POST'])
 def upload_products(request):
     serializador = ProductSerializer(data=request.data, many=True)
@@ -28,10 +28,29 @@ def GetHeaders(request):
         logger.warning("Error al obtener las cabeceras")
         return Response({"error: No se proporciono ningun archivo."}, status=status.HTTP_400_BAD_REQUEST)
     
+    
     try:
-        df_headers = pd.read_excel(file, header= 0, nrows= 0)
-        headers = df_headers.columns.tolist()
-        final_headers = [str(header).lower().strip() for header in headers ] #limpieza de la lista
+        df_muestra = pd.read_excel(file,header=None, nrows=10)
+        fila_header = 0
+
+        #con este for lo que hago es validar si hay columnas vacias y si hay, las sato y sigo con la que esta a la derecha
+        for i in range(len(df_muestra)):
+            celda_i = df_muestra.iloc[i,0]
+            celda_d = df_muestra.iloc[i,1]
+
+            if pd.isna(celda_i) and pd.notna(celda_d):
+                continue
+            else:
+                fila_header = i
+                break
+        
+        file.seek(0)
+
+        df_final = pd.read_excel(file, header= fila_header, nrows=0)
+        headers = df_final.columns.to_list()   
+        #df_headers = pd.read_excel(file, header= 0, nrows= 0)
+        #headers = df_headers.columns.tolist()
+        final_headers = [str(header).lower().strip() for header in headers if not str(header).lower().startswith('unnamed:')] #limpieza de la lista
         logger.info(f"Cabeceras de alrchivo extradias: {final_headers}")
         return Response ({"headers": final_headers}, status=status.HTTP_200_OK)
     except Exception as e:
