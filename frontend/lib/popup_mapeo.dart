@@ -17,17 +17,8 @@ void popUpMapeo (BuildContext context, UploadHeadersLogic viewModel) {
     'type',
     'quantity',
     'location',
-    'Omitir' // <-- Te recomiendo mucho añadir una opción para ignorar
-  ];
 
-  /* NOTA: Tu mapa 'userChoose' está declarado aquí, pero para que 
-  funcione y guarde la selección, necesitarás:
-  1. Moverlo a tu 'viewModel' (para que el estado persista).
-  2. Usar un 'StatefulBuilder' para refrescar el popup.
-  3. Usar ese mapa en 'value' y 'onChanged' del DropdownButton.
-  
-  Lo dejaré como 'value: null' por ahora, como pediste.
-  */
+  ];
 
   showDialog(
     context: context,
@@ -40,7 +31,7 @@ void popUpMapeo (BuildContext context, UploadHeadersLogic viewModel) {
           content: Container(
             width: double.maxFinite, 
             child: SingleChildScrollView(
-              child: Column( // <-- El .map debe ir DENTRO de 'children'
+              child: Column( 
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // --- TÍTULOS ---
@@ -62,24 +53,20 @@ void popUpMapeo (BuildContext context, UploadHeadersLogic viewModel) {
                   ),
                   Divider(), // Una línea para separar
 
-                  // --- MAPEO DE FILAS ---
-                  // CORRECCIÓN 1: El map va DENTRO de 'children' y con sintaxis correcta
-                  ...fileHeaders.map((fileHeader) { // Se usa 'fileHeader' (singular)
+
+                  ...fileHeaders.map((fileHeader) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Chip(label: Text(fileHeader)), // Se usa 'fileHeader'
+                          Chip(label: Text(fileHeader)), 
                           Icon(Icons.arrow_forward),
-                          DropdownButton<String>( // Es bueno tiparlo
+                          DropdownButton<String>( 
                             hint: Text("Selecciona"),
                             
-                            // CORRECCIÓN 2: 'value' debe venir de tu lógica de estado
-                            // Lo dejo null por ahora.
                             value: null, 
                             
-                            // CORRECCIÓN 3: Faltaba la propiedad 'items'
                             items: dbColumns.map((String dbCol) {
                               return DropdownMenuItem<String>(
                                 value: dbCol,
@@ -90,19 +77,19 @@ void popUpMapeo (BuildContext context, UploadHeadersLogic viewModel) {
                             // CORRECCIÓN 4: Faltaba 'onChanged' (obligatorio)
                             onChanged: (String? newValue) {
                               // 
-                              // --- AQUÍ VA TU LÓGICA DE MAPEO ---
-                              // (Ej: viewModel.actualizarMapeo(fileHeader, newValue); )
+                              // --- AQUÍ VA LA LÓGICA DE MAPEO ---
+                              // por medio del mapa en dart 
                               //
                             },
                           )
                         ],
                       ),
                     );
-                  }).toList(), // <-- CORRECIÓN 5: .toList() es necesario
+                  }).toList(),
                 ],
               ),
             ),
-          ), // <-- El 'Container' se cierra aquí
+          ),
           actions: [
             TextButton(
               child: Text("Cancelar"),
@@ -114,9 +101,8 @@ void popUpMapeo (BuildContext context, UploadHeadersLogic viewModel) {
               child: Text("Confirmar"),
               onPressed: () {
                 //
-                // --- AQUÍ VA TU LÓGICA DE VALIDACIÓN ---
-                // (Ej: if (viewModel.mapeoEsValido()) { ... } )
-                //
+                // --- AQUÍ VA LA LÓGICA DE VALIDACIÓN --- y de envio de el mapeo al api
+      
                 Navigator.of(context).pop(); 
               },
             ),

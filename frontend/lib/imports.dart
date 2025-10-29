@@ -17,6 +17,7 @@ export 'package:frontend/app.dart';
 //pantallas
 //todo lo que el usuario maneja
 export "package:frontend/inicial.dart";
+export 'package:frontend/popup_mapeo.dart';
 
 //widgets 
 //todolos los widgets que se van a manejar

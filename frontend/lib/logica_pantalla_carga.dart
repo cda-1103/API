@@ -66,11 +66,4 @@ class UploadHeadersLogic extends ChangeNotifier {
     }
   }
 
-  // Lógica para el siguiente paso (puede evolucionar)
-  void goToMappingStep() {
-     
-     _statusMessage = "Mostrando UI de mapeo (Próximo paso)...";
-     notifyListeners(); // Actualiza UI
-     // TODO: Implementar navegación o cambio de estado para mostrar mapeo
-  }
 }

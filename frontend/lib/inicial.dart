@@ -9,12 +9,10 @@ class InventoryUploadPage extends StatefulWidget {
   State<InventoryUploadPage> createState() => _InventoryUploadPageState();
 }
 
-// El State ahora es mucho más simple
 class _InventoryUploadPageState extends State<InventoryUploadPage> {
   // --- Creamos una instancia de nuestro ViewModel ---
   final UploadHeadersLogic _viewModel = UploadHeadersLogic();
 
-  // --- Nos suscribimos a los cambios del ViewModel ---
   @override
   void initState() {
     super.initState();
@@ -22,7 +20,6 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
     _viewModel.addListener(_onViewModelUpdate); 
   }
 
-  // --- Nos desuscribimos para evitar fugas de memoria ---
   @override
   void dispose() {
     _viewModel.removeListener(_onViewModelUpdate); // Quita el oyente
@@ -46,8 +43,8 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
       appBar: AppBar(
         // Lee el estado 'fileHeaders' del ViewModel
         title: Text(_viewModel.fileHeaders.isEmpty 
-            ? 'Carga de Archivo - Paso 1: Seleccionar Archivo' 
-            : 'Carga de Archivo - Paso 2: Mapear'),
+            ? 'Carga de Archivo - Paso 1: Seleccionar Archivo' //condicional, si esta vacio se muestra esto
+            : 'Carga de Archivo - Paso 2: Mapear'), //si ya hay un archivo, paso 2 mapear
         backgroundColor: Colors.blueGrey,
       ),
       body: Center(
@@ -61,7 +58,7 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
                 icon: const Icon(Icons.folder_open_outlined),
                 label: const Text('Seleccionar Archivo y Leer Cabeceras'),
                 // Llama al método del ViewModel
-                // Lee el estado 'isLoading' del ViewModel para habilitar/deshabilitar
+                // Lee el estado 'isLoading' del ViewModel para habilitar/deshabilitar el boton
                 onPressed: _viewModel.isLoading ? null : _viewModel.selectFileAndGetHeaders, 
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -107,7 +104,7 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
 
 
               ElevatedButton(
-                // Habilita/deshabilita leyendo 'fileHeaders' e 'isLoading' del ViewModel
+                // Habilita/deshabilita el boton de envio leyendo 'fileHeaders' e 'isLoading' del ViewModel
                 onPressed: (_viewModel.fileHeaders.isEmpty || _viewModel.isLoading) 
                     ? null 
                     : () {
