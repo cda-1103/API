@@ -1,14 +1,20 @@
+//archvio de comunicacion con la API
+//contiene tanto la funcion de extraer las cabeceras del archivo, como la funcion que mapea el archivo
+
+
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb; // Para detectar si es Web
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 
+
+//funcion para obtener las cabeceras del archivo
 Future<List<String>>headersFromApi(PlatformFile file) async {
 
   final url = Uri.parse('http://127.0.0.1:8000/api/v1/products/get-headers/');
   var request = http.MultipartRequest('POST', url);
 
-  //para adjuntar el archivo correctamente tanto en web como en mobile/desktop
+  //para adjuntar el archivo correctamente tanto en web como en mobile/desktop se usa KIsWeb
   if (kIsWeb) {
     // Para Web
     request.files.add(
@@ -39,6 +45,47 @@ Future<List<String>>headersFromApi(PlatformFile file) async {
       return headers;
     } else {
       throw Exception('Error al obtener las cabeceras: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Error al conectar con la API: $e');
+  }
+}
+
+//funcion para enviar el mapeo del archivo completo a la API
+Future <void> sendMapping(PlatformFile file, String jsonString) async {
+
+  final url = Uri.parse('http://127.0.0.1:8000/api/v1/products/process-file/'); 
+  var request = http.MultipartRequest('POST', url);
+  request.fields['mapping'] = jsonString;
+  //para adjuntar el archivo correctamente tanto en web como en mobile/desktop
+  if (kIsWeb) {
+    // Para Web
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        file.bytes!,
+        filename: file.name,
+
+      )
+    );
+  } else {
+    // Para Mobile/Desktop
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'file',
+        file.path!,
+        filename: file.name,
+      ),
+    );
+  }
+  try {
+    final streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 201) {
+      return;
+    } else {
+      throw Exception('Error al enviar el mapeo: ${response.statusCode}');
     }
   } catch (e) {
     throw Exception('Error al conectar con la API: $e');

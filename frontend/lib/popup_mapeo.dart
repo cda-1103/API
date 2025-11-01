@@ -1,114 +1,142 @@
+//Interfaz de la ventana PopUp de mapeo
+
+import 'package:file_picker/file_picker.dart';
 import 'package:frontend/imports.dart';
-import 'package:frontend/logica_pantalla_carga.dart';
+import 'package:frontend/logic_map_file.dart'; 
 
-void popUpMapeo (BuildContext context, UploadHeadersLogic viewModel) {
 
-  //columnas del archivo
-  final List<String> fileHeaders = viewModel.fileHeaders 
-      .where((h) => !h.startsWith('unnamed:'))
-      .toList();
+class PopupMapFile extends StatefulWidget {
+  final List<String> fileHeaders;
+  final PlatformFile file; 
 
-  //columnas de la base de datos
-  final List<String> dbColumns = [
-    'serial_number',
-    'description',
-    'category',
-    'brand',
-    'type',
-    'quantity',
-    'location',
+  const PopupMapFile({
+    super.key,
+    required this.fileHeaders,
+    required this.file,
+  });
 
-  ];
+  @override
+  State<PopupMapFile> createState() => _PopupMapFileState();
+}
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context){
-      return PopScope(
-        canPop: false,
-        child: AlertDialog(
-          title: Text('Mapea tus columnas'),
-          content: Container(
-            width: double.maxFinite, 
-            child: SingleChildScrollView(
-              child: Column( 
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // --- TÍTULOS ---
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+class _PopupMapFileState extends State<PopupMapFile> {
+  final PopupLogic _viewModel = PopupLogic(); 
+
+  @override
+  void initState() {
+    super.initState();
+    
+
+    _viewModel.addListener(() {
+      setState(() {});
+    });
+
+
+    _viewModel.initializeMapping(widget.fileHeaders);
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose(); 
+    super.dispose();
+  }
+  
+
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: !_viewModel.isSubmitting, 
+      
+      child: AlertDialog(
+        title: Text('Mapea tus columnas'),
+        
+        content: Container(
+          width: double.maxFinite,
+          child: SingleChildScrollView( 
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Columnas del excel", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Columnas destino", style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                Divider(),
+                ...widget.fileHeaders.map((fileheader) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Columnas de excel",
-                          style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(
-                          "Destino",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Chip(label: Text(fileheader)),
+                        Icon(Icons.arrow_forward_ios, size: 16), 
+
+                        DropdownButton<String>(
+                          hint: Text('Selecciona'),
+                          // Conexión LEER: Lee el valor del cerebro
+                          value: _viewModel.mappingState[fileheader],
+                          
+                          // Lee las opciones del archivo logic_map_file de las columnas disponibles en la base de datos
+                          items: _viewModel.dbColumns.map((String dbCol) {
+                            return DropdownMenuItem<String>(
+                              value: dbCol,
+                              child: Text(dbCol),
+                            );
+                          }).toList() 
+                            ..insert(0, DropdownMenuItem(
+                              value: null,
+                              child: Text("Selecciona"),
+                            )),
+                          
+
+                          onChanged: (String? newValue) {
+                            // actualiza la lista con el nuevo valor
+                            _viewModel.updateMapping(fileheader, newValue);
+                          },
                         ),
                       ],
                     ),
+                  );
+                }).toList(), 
+                //aqui se debe mostrar el mensaje de completado si _viewmodel.vailaditonerror == null
+                if (_viewModel.validationError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      _viewModel.validationError!, 
+                      style: TextStyle(color: Colors.red), 
+                    ),
                   ),
-                  Divider(), // Una línea para separar
-
-
-                  ...fileHeaders.map((fileHeader) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Chip(label: Text(fileHeader)), 
-                          Icon(Icons.arrow_forward),
-                          DropdownButton<String>( 
-                            hint: Text("Selecciona"),
-                            
-                            value: null, 
-                            
-                            items: dbColumns.map((String dbCol) {
-                              return DropdownMenuItem<String>(
-                                value: dbCol,
-                                child: Text(dbCol),
-                              );
-                            }).toList(),
-
-                            // CORRECCIÓN 4: Faltaba 'onChanged' (obligatorio)
-                            onChanged: (String? newValue) {
-                              // 
-                              // --- AQUÍ VA LA LÓGICA DE MAPEO ---
-                              // por medio del mapa en dart 
-                              //
-                            },
-                          )
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ],
-              ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              child: Text("Cancelar"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Esto cierra el popup
-              },
-            ),
-            ElevatedButton(
-              child: Text("Confirmar"),
-              onPressed: () {
-                //
-                // --- AQUÍ VA LA LÓGICA DE VALIDACIÓN --- y de envio de el mapeo al api
-      
-                Navigator.of(context).pop(); 
-              },
-            ),
-          ],
-        ), 
-      );
-    }
-  ); 
+        ),
+
+        actions: [
+          TextButton(
+            onPressed: _viewModel.isSubmitting ? null : () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: _viewModel.isSubmitting ? null : () {
+
+              _viewModel.sendMap(widget.file); //envia el archivo
+            },
+            
+            child: _viewModel.isSubmitting
+                ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: const Color.fromARGB(255, 21, 186, 240)))
+                : Text("Confirmar"),
+          ),
+        ],
+      ), // <-- Aquí cierra el AlertDialog
+    ); // <-- Aquí cierra el PopScope
+  }
 }

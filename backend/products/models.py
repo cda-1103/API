@@ -11,11 +11,8 @@ from django.db import models
 class Products(models.Model):
     serial_number = models.TextField(unique=True)
     description = models.TextField()
-    category = models.TextField(blank=True, null=True)
-    brand = models.TextField(blank=True, null=True)
-    type = models.TextField(blank=True, null=True)
     quantity = models.FloatField()
-    location = models.TextField(blank=True, null=True)
+
 
     class Meta:
         managed = False

@@ -108,7 +108,16 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
                 onPressed: (_viewModel.fileHeaders.isEmpty || _viewModel.isLoading) 
                     ? null 
                     : () {
-                      popUpMapeo(context, _viewModel);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context){
+                          return PopupMapFile(
+                            fileHeaders: _viewModel.fileHeaders,
+                            file: _viewModel.selectedFile!,
+                            );
+                        }
+                      );
                     },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue, 
