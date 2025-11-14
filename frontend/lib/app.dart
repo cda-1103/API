@@ -1,5 +1,5 @@
 import 'package:frontend/imports.dart';
-import 'package:frontend/inventory_screen.dart';
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "API",
-      // home: InventoryCreen(),
+      //home: InventoryScreen(),
       home: InventoryUploadPage(),
       debugShowCheckedModeBanner: false,
     );

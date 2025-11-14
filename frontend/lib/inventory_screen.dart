@@ -18,6 +18,7 @@ class _InventoryScreenState extends State<InventoryScreen>{
   late Future <List<Product>> _inventoryFuture;
 
   bool _filterInSock = false;
+  String _currentOrdering = '';
 
   @override
   void initState(){
@@ -27,7 +28,7 @@ class _InventoryScreenState extends State<InventoryScreen>{
 
   void _updateData(){
     setState(() {
-      _inventoryFuture = _apiService.getInventory(filterByStock: _filterInSock);
+      _inventoryFuture = _apiService.getInventory(filterByStock: _filterInSock, ordering: _currentOrdering);
     });
   }
 
@@ -63,6 +64,32 @@ class _InventoryScreenState extends State<InventoryScreen>{
           ),
           const Divider(height: 1),
 
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Ordenar Por Ordonen Alfabetico",
+                  style: TextStyle(fontSize: 16),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: (){
+                        setState(() {
+                          _currentOrdering = 'description';
+                        });
+                        _updateData();
+                      },
+                      child: const Text("A-Z"),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                )
+              ],
+            ),
+          ),
           Expanded(
             child: FutureBuilder<List<Product>>(
               future: _inventoryFuture,

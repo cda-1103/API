@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/imports.dart';
 import 'package:frontend/logica_pantalla_carga.dart';
 import 'package:frontend/popup_mapeo.dart';
 
@@ -133,14 +134,16 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
 
               ElevatedButton(
                 onPressed: () {
-                  
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => const InventoryScreen()));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                 ),
-                child: const Text('Ver historial de carga'),
+                child: const Text('Ver Inventario'),
               ),
               const SizedBox(height: 12.0),
 

@@ -56,11 +56,7 @@ MIDDLEWARE = [
 ]
 
 
-REST_FRAMEWROK = {
-    'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend'
-    ]
-}
+
 
 
 
@@ -168,5 +164,13 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+# Pon esto en cualquier parte de tu settings.py (al final es un buen lugar)
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter'
+    ],
 }
 

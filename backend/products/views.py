@@ -150,7 +150,9 @@ class ProductFilter(filters.FilterSet):
 
     quantity__gt = filters.NumberFilter(field_name='quantity', lookup_expr='gt')
 
-    class meta:
+    produc = Products.objects.all().order_by('description')
+
+    class Meta:
         model = Products
         fields = ['quantity', 'quantity__gt']
 
@@ -161,3 +163,5 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
+
+    ordering_fields = ['description']

@@ -8,59 +8,60 @@ import 'package:frontend/comunication_api.dart';
 
 class PopupLogic extends ChangeNotifier{
 
+  final ApiService _apiService = ApiService(); //instancia de la clase API service 
   Map<String, String?> _mappingState = {};
   Map<String, String?> get mappingState => _mappingState;
 
-final List<String> dbColumns = [
-  'serial_number',
-  'description',
-  'quantity'
-];
-
-
-//estados con los que se va a trabajar
-bool _isSubmitting = false;
-bool get isSubmitting => _isSubmitting;
-String success = '';
-
-//falta agregar estadp de completado para mostrar al usuario
-String? _validationError;
-String?  get validationError => _validationError;
-
-
-void initializeMapping(List<String>fileHeaders){
-  Map<String, String?> mapaTemporal = {};
-
-  for (String excelHeader in fileHeaders){
-
-    if(dbColumns.contains(excelHeader.toLowerCase())){
-      mapaTemporal[excelHeader] = excelHeader.toLowerCase();
-    }else {
-      mapaTemporal[excelHeader] = null;
-    }
-  }
-  _mappingState = mapaTemporal;
-}
-
-//esto es para actualizar el mapa del mapeo 
-void updateMapping(String fileHeader, String? selectedDbcolumn){
-  _mappingState[fileHeader] = selectedDbcolumn ; 
-
-  notifyListeners();
-}
-
-//metodo para validar que los campos obligatorios esten incluidos, se validan que no hayan duplicados, para retornar true, es decir todo esta bien
-bool _validateMapping(){
-  final List<String> columnasObligatorias = [
+  final List<String> dbColumns = [
     'serial_number',
     'description',
     'quantity'
   ];
 
-  if (_validationError != null){
-  _validationError = null;
-  notifyListeners();
+
+  //estados con los que se va a trabajar
+  bool _isSubmitting = false;
+  bool get isSubmitting => _isSubmitting;
+  String success = '';
+
+  //falta agregar estadp de completado para mostrar al usuario
+  String? _validationError;
+  String?  get validationError => _validationError;
+
+
+  void initializeMapping(List<String>fileHeaders){
+    Map<String, String?> mapaTemporal = {};
+
+    for (String excelHeader in fileHeaders){
+
+      if(dbColumns.contains(excelHeader.toLowerCase())){
+        mapaTemporal[excelHeader] = excelHeader.toLowerCase();
+      }else {
+        mapaTemporal[excelHeader] = null;
+      }
+    }
+    _mappingState = mapaTemporal;
   }
+
+  //esto es para actualizar el mapa del mapeo 
+  void updateMapping(String fileHeader, String? selectedDbcolumn){
+    _mappingState[fileHeader] = selectedDbcolumn ; 
+
+    notifyListeners();
+  }
+
+  //metodo para validar que los campos obligatorios esten incluidos, se validan que no hayan duplicados, para retornar true, es decir todo esta bien
+  bool _validateMapping(){
+    final List<String> columnasObligatorias = [
+      'serial_number',
+      'description',
+      'quantity'
+    ];
+
+    if (_validationError != null){
+    _validationError = null;
+    notifyListeners();
+    }
 
   //aqui se validan si los campos obligatoritos estan incluidos
   for (int i = 0; i < columnasObligatorias.length; i++ ){
@@ -108,7 +109,7 @@ bool _validateMapping(){
     try{
       String jsonString = jsonEncode(mapaLimpio);
 
-      await sendMapping(file, jsonString);
+      await _apiService.sendMapping(file, jsonString);
 
     }catch(e){
       _validationError = e.toString();

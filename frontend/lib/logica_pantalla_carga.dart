@@ -11,6 +11,7 @@ class UploadHeadersLogic extends ChangeNotifier {
   bool _isLoading = false;
   List<String> _fileHeaders = [];
   String _statusMessage = ' Ningún archivo seleccionado';
+  final ApiService _apiService = ApiService(); //instancia de la clase API service 
 
   // --- Getters públicos para que la UI lea los estados de carga del archivo---
   PlatformFile? get selectedFile => _selectedFile;
@@ -42,7 +43,7 @@ class UploadHeadersLogic extends ChangeNotifier {
         notifyListeners(); // Actualiza UI
 
         // 3. Llama a la API
-        final headers = await headersFromApi(file); 
+        final headers = await  _apiService.headersFromApi(file); 
 
         // 4. Si tiene éxito, guarda cabeceras y notifica al usuario
         _fileHeaders = headers;
