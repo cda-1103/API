@@ -21,6 +21,7 @@ final List<String> dbColumns = [
 //estados con los que se va a trabajar
 bool _isSubmitting = false;
 bool get isSubmitting => _isSubmitting;
+String success = '';
 
 //falta agregar estadp de completado para mostrar al usuario
 String? _validationError;

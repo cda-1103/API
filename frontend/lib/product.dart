@@ -1,37 +1,37 @@
-//inutilizada 
+
+import 'dart:convert';
+
+List<Product> productFromJson(String str) => List<Product>.from(json.decode(str).map((x) => Product.fromJson(x)));
+
+String productToJson(List<Product> data) => jsonEncode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+
+
 class Product {
   final String serialNumber;
   final String description;
-  final String category;
-  final String brand;
-  final String type;
   final double quantity;
-  final String location;
 
   //constructor de la clase 
   Product({
     required this.serialNumber,
     required this.description,
-    required this.category,
-    required this.brand,
-    required this.type,
     required this.quantity,
-    required this.location,
-
   });
 
+  factory Product.fromJson(Map<String, dynamic> json) => Product(
+    serialNumber: json["serial_number"], 
+    description: json["description"], 
+    quantity: (json["quantity"] as num? ?? 0).toDouble(),
+    );
 
-  // conversion a un map para luego convertirla a un tipo json
-  Map <String, dynamic> toJson(){
-    return{
-      'serial_number' : serialNumber,
-      'description' : description,
-      'category' : category,
-      'brand': brand,
-      'type' : type,
-      'quantity' : quantity,
-      'location' : location,
-    };
+  Map<String, dynamic> toJson() => {
+    "serial_number": serialNumber,
+    "description" : description,
+    "quantity" : quantity,
+  };
 
-  }
+
+
+
 }

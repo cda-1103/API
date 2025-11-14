@@ -4,8 +4,11 @@
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb; // Para detectar si es Web
+import 'package:flutter/material.dart';
+import 'package:frontend/product.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:frontend/product.dart';
 
 
 //funcion para obtener las cabeceras del archivo
@@ -89,5 +92,34 @@ Future <void> sendMapping(PlatformFile file, String jsonString) async {
     }
   } catch (e) {
     throw Exception('Error al conectar con la API: $e');
+  }
+}
+
+
+class ApiService{
+  final String _baseUrl = "http://127.0.0.1:8000/api/v1/products/";
+
+  Future<List<Product>> getInventory({bool filterByStock = false}) async {
+    String endpoint = "inventario/";
+
+    if (filterByStock){
+      endpoint += "?quantity__gt=0";
+    }
+
+    final url = Uri.parse(_baseUrl + endpoint);
+
+    try{
+      final response = await http.get(url);
+
+      if (response.statusCode == 200){
+        final List<Product> products = productFromJson(utf8.decode(response.bodyBytes));
+        return products;
+      } else {
+        throw Exception('Error al cargar invenatario: ${response.statusCode}');
+      }
+    }catch (e) {
+      throw Exception('Error de conexion: $e');
+    }
+
   }
 }

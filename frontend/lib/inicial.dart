@@ -126,10 +126,25 @@ class _InventoryUploadPageState extends State<InventoryUploadPage> {
                 ),
                 child: const Text('SIGUIENTE: Mapear Columnas'),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height:100.0),
 
               // Muestra el indicador leyendo 'isLoading' del ViewModel
               if (_viewModel.isLoading) const Center(child: CircularProgressIndicator()), 
+
+              ElevatedButton(
+                onPressed: () {
+                  
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+                child: const Text('Ver historial de carga'),
+              ),
+              const SizedBox(height: 12.0),
+
+
             ],
           ),
         ),

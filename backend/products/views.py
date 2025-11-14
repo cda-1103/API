@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 import logging
 import pandas as pd
+from rest_framework import viewsets
+from django_filters import rest_framework as filters
 
 
 logger = logging.getLogger('carga_archivo')
@@ -141,4 +143,21 @@ def GetHeaders(request):
     except Exception as e:
         logger.error(f"Error al leer las cabeceras: {str(e)}")
         return Response ({"error": "No se pudo procesar el archivo Excel.", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
 
+
+class ProductFilter(filters.FilterSet):
+
+    quantity__gt = filters.NumberFilter(field_name='quantity', lookup_expr='gt')
+
+    class meta:
+        model = Products
+        fields = ['quantity', 'quantity__gt']
+
+
+
+
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+    filterset_class = ProductFilter
