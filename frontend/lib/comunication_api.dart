@@ -8,43 +8,47 @@ import 'package:frontend/product.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 
-class ApiService{
-  final String _baseUrl = "http://127.0.0.1:8000/api/v1/products/";
+class ApiService {
+  final String _baseUrl = "http://192.168.0.117:8000/api/v1/products/";
 
   //metodo para obtener el inventario desde la base de datos.
-  Future<List<Product>> getInventory({bool filterByStock = false, String? ordering}) async {
+  Future<List<Product>> getInventory({
+    bool filterByStock = false,
+    String? ordering,
+  }) async {
     String endpoint = "inventario/";
 
-    final Map<String, String>queryParameters = {};
+    final Map<String, String> queryParameters = {};
 
-    if (filterByStock){
+    if (filterByStock) {
       queryParameters['quantity__gt'] = '0';
     }
-    if(ordering != null){
+    if (ordering != null) {
       queryParameters['ordering'] = ordering;
     }
 
     final url = Uri.parse(_baseUrl + endpoint).replace(
-      queryParameters: queryParameters.isEmpty ? null : queryParameters
+      queryParameters: queryParameters.isEmpty ? null : queryParameters,
     );
 
-    try{
+    try {
       final response = await http.get(url);
 
-      if (response.statusCode == 200){
-        final List<Product> products = productFromJson(utf8.decode(response.bodyBytes));
+      if (response.statusCode == 200) {
+        final List<Product> products = productFromJson(
+          utf8.decode(response.bodyBytes),
+        );
         return products;
       } else {
         throw Exception('Error al cargar invenatario: ${response.statusCode}');
       }
-    }catch (e) {
+    } catch (e) {
       throw Exception('Error de conexion: $e');
     }
   }
 
-//metodo para obtener las cabeceras del archivo
-  Future<List<String>>headersFromApi(PlatformFile file) async {
-
+  //metodo para obtener las cabeceras del archivo
+  Future<List<String>> headersFromApi(PlatformFile file) async {
     String endpoint = 'get-headers/';
     final url = Uri.parse(_baseUrl + endpoint);
     var request = http.MultipartRequest('POST', url);
@@ -53,12 +57,7 @@ class ApiService{
     if (kIsWeb) {
       // Para Web
       request.files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          file.bytes!,
-          filename: file.name,
-
-        )
+        http.MultipartFile.fromBytes('file', file.bytes!, filename: file.name),
       );
     } else {
       // Para Mobile/Desktop
@@ -79,7 +78,9 @@ class ApiService{
         List<String> headers = List<String>.from(responseData['headers']);
         return headers;
       } else {
-        throw Exception('Error al obtener las cabeceras: ${response.statusCode}');
+        throw Exception(
+          'Error al obtener las cabeceras: ${response.statusCode}',
+        );
       }
     } catch (e) {
       throw Exception('Error al conectar con la API: $e');
@@ -87,9 +88,8 @@ class ApiService{
   }
 
   //metodo para enviar el mapeo del archivo completo a la API
-  Future <void> sendMapping(PlatformFile file, String jsonString) async {
-
-    String endpoint ="process-file/";
+  Future<void> sendMapping(PlatformFile file, String jsonString) async {
+    String endpoint = "process-file/";
     final url = Uri.parse(_baseUrl + endpoint);
     var request = http.MultipartRequest('POST', url);
     request.fields['mapping'] = jsonString;
@@ -97,12 +97,7 @@ class ApiService{
     if (kIsWeb) {
       // Para Web
       request.files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          file.bytes!,
-          filename: file.name,
-
-        )
+        http.MultipartFile.fromBytes('file', file.bytes!, filename: file.name),
       );
     } else {
       // Para Mobile/Desktop
@@ -128,6 +123,3 @@ class ApiService{
     }
   }
 }
-
-
-

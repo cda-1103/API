@@ -122,3 +122,9 @@ INFO 2025-11-11 00:43:27,583 se eliminaron: 7139 registros de la base de datos
 INFO 2025-11-14 13:50:07,928 Cabeceras de alrchivo extradias: ['serial_number', 'description', 'category', 'brand', 'type', 'quantity', 'location']
 INFO 2025-11-14 13:50:30,515 Cabeceras de alrchivo extradias: ['codigos', 'nombres', 'departamento', 'precio', 'check', 'stock total', 'almacen', 'dke']
 INFO 2025-11-14 13:50:49,040 se eliminaron: 13 registros de la base de datos
+INFO 2025-11-19 03:51:07,458 Cabeceras de alrchivo extradias: ['codigos', 'nombres', 'departamento', 'precio', 'check', 'stock total', 'almacen', 'dke']
+INFO 2025-11-19 20:09:05,020 Cabeceras de alrchivo extradias: ['codigos', 'nombres', 'departamento', 'precio', 'check', 'stock total', 'almacen', 'dke']
+INFO 2025-11-20 14:13:03,829 Cabeceras de alrchivo extradias: ['serial_number', 'description', 'quantity']
+INFO 2025-11-20 14:13:08,264 se eliminaron: 7139 registros de la base de datos
+INFO 2025-11-20 15:42:08,014 Cabeceras de alrchivo extradias: ['serial_number', 'description', 'quantity']
+INFO 2025-11-20 15:42:11,144 se eliminaron: 2 registros de la base de datos
